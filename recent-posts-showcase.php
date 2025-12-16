@@ -137,7 +137,7 @@ add_action(
 						},
 					),
 					'displayImage'   => array(
-						'required'          => true,
+						'required'          => false,
 						'sanitize_callback' => 'rest_sanitize_boolean',
 					),
 					'displayExcerpt' => array(
@@ -173,7 +173,15 @@ function recent_posts_showcase_load_more( $request ) {
 	$page           = max( 1, absint( $request['page'] ) );
 	$posts_per_page = max( 1, absint( $request['posts_per_page'] ) );
 	$taxonomy       = ! empty( $request['taxonomy'] ) ? sanitize_text_field( $request['taxonomy'] ) : '';
-	$terms          = ! empty( $request['terms'] ) ? array_map( 'intval', (array) $request['terms'] ) : array();
+
+	$terms = array();
+	if ( ! empty( $request['terms'] ) ) {
+		if ( is_string( $request['terms'] ) ) {
+			$terms = array_map( 'intval', explode( ',', $request['terms'] ) );
+		} elseif ( is_array( $request['terms'] ) ) {
+			$terms = array_map( 'intval', $request['terms'] );
+		}
+	}
 
 	$display_image   = rest_sanitize_boolean( $request['displayImage'] ?? false );
 	$display_excerpt = rest_sanitize_boolean( $request['displayExcerpt'] ?? false );
@@ -182,13 +190,15 @@ function recent_posts_showcase_load_more( $request ) {
 	$layout          = sanitize_text_field( $request['layout'] ?? 'grid' );
 
 	$args = array(
-		'post_type'      => $post_type,
-		'posts_per_page' => $posts_per_page,
-		'paged'          => $page,
-		'post_status'    => 'publish',
+		'post_type'           => $post_type,
+		'posts_per_page'      => $posts_per_page,
+		'paged'               => $page,
+		'post_status'         => 'publish',
+		'ignore_sticky_posts' => true,
+		'no_found_rows'       => false,
 	);
 
-	if ( $taxonomy && ! empty( $terms ) ) {
+	if ( $taxonomy && is_array( $terms ) && count( $terms ) > 0 ) {
 		$args['tax_query'] = array(
 			array(
 				'taxonomy' => $taxonomy,
@@ -233,10 +243,9 @@ function recent_posts_showcase_load_more( $request ) {
 		}
 		wp_reset_postdata();
 	}
-	$html = ob_get_clean();
 
 	return array(
-		'html'    => $html,
+		'html'    => ob_get_clean(),
 		'hasMore' => ( $page < $query->max_num_pages ),
 	);
 }
