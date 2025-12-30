@@ -102,6 +102,15 @@
     .recent-post-item {
         display: flex;
         gap: 2rem;
+
+        .recent-post-thumbnail img {
+            max-width: 100%;
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border-radius: 6px;
+        }
     }
 }
 
@@ -124,9 +133,9 @@
         margin-bottom: 20px;
     }
 
-  .swiper-button-next:after,
-    .swiper-button-prev:after { 
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
         font-size: 28px;
     }
-        
+
 }

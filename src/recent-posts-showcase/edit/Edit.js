@@ -12,6 +12,26 @@ import ListLayout from './layouts/ListLayout';
 import CarouselLayout from './layouts/CarouselLayout';
 import './editor.scss'; // editor styles.
 
+import { useSelect } from '@wordpress/data';
+import { store as coreStore } from '@wordpress/core-data';
+
+export const useTaxonomiesForPostType = (postType) => {
+    return useSelect(
+        (select) => {
+            if (!postType) {
+                return [];
+            }
+
+            return (
+                select(coreStore).getTaxonomies({
+                    type: postType,
+                }) || []
+            );
+        },
+        [postType]
+    );
+};
+
 const Edit = ({ attributes, setAttributes }) => {
     const { postType, taxonomy, terms, postsToShow, displayImage, displayExcerpt, displayAuthor, displayDate, layout, enableLoadMore } = attributes;
 
@@ -19,14 +39,23 @@ const Edit = ({ attributes, setAttributes }) => {
     const availableTerms = useTerms(taxonomy);
     const posts = usePosts(postType, postsToShow, taxonomy, terms);
 
-    const termNames = availableTerms ? availableTerms.map((term) => term.name) : [];
+    const updateTerms = (selectedNames = []) => {
+        if (!availableTerms) {
+            return;
+        }
 
-    const updateTerms = (selectedNames) => {
         const selectedIds = availableTerms
             .filter((term) => selectedNames.includes(term.name))
             .map((term) => term.id);
+
         setAttributes({ terms: selectedIds });
     };
+
+    const taxonomies = useTaxonomiesForPostType(postType);
+    const taxonomyOptions = taxonomies.map((tax) => ({
+        label: tax.labels.singular_name,
+        value: tax.slug,
+    }));
 
     const postTypeOptions = postTypes
         .filter((type) => type.viewable)
@@ -46,14 +75,16 @@ const Edit = ({ attributes, setAttributes }) => {
                         postsToShow={postsToShow}
                         layout={layout}
                     />
+
                     <FilterSettingsPanel
                         taxonomy={taxonomy}
+                        taxonomyOptions={taxonomyOptions}
                         setAttributes={setAttributes}
                         availableTerms={availableTerms}
                         terms={terms}
                         updateTerms={updateTerms}
-                        termNames={termNames}
                     />
+
                     <DisplaySettingsPanel
                         displayImage={displayImage}
                         displayExcerpt={displayExcerpt}
