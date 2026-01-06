@@ -20,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Constants for paths.
  */
+define( 'RPS_PLUGIN_VERSION', '1.0.0' );
 define( 'RPS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'RPS_PLUGIN_URL', plugin_dir_url( __FILE__ ) . 'src/recent-posts-showcase/' );
 
@@ -58,16 +59,30 @@ add_action( 'init', 'create_block_recent_posts_showcase_block_init' );
  * Enqueue swiper assets.
  */
 function rps_enqueue_swiper_assets() {
-	// Only enqueue on frontend if needed.
-	wp_enqueue_style( 'swiper-css', plugins_url( 'node_modules/swiper/swiper-bundle.min.css', __FILE__ ) );
-	wp_enqueue_script( 'swiper-js', plugins_url( 'node_modules/swiper/swiper-bundle.min.js', __FILE__ ), array(), false, true );
+	// Enqueue Swiper CSS on the frontend.
+	wp_enqueue_style(
+		'swiper-css',
+		RPS_PLUGIN_URL . 'assets/swiper/swiper-bundle.min.css',
+		array(),
+		RPS_PLUGIN_VERSION,
+		'all'
+	);
+
+	// Enqueue Swiper JS on the frontend.
+	wp_enqueue_script(
+		'swiper-js',
+		RPS_PLUGIN_URL . 'assets/swiper/swiper-bundle.min.js',
+		array(),
+		RPS_PLUGIN_VERSION,
+		true
+	);
 
 	// Enqueue custom JS for Swiper initialization on the frontend.
 	wp_enqueue_script(
 		'rps-swiper-init',
 		RPS_PLUGIN_URL . 'assets/swiper-init.js',
 		array( 'swiper-js' ),
-		false,
+		RPS_PLUGIN_VERSION,
 		true
 	);
 
@@ -76,7 +91,7 @@ function rps_enqueue_swiper_assets() {
 		'rps-load-more',
 		RPS_PLUGIN_URL . 'assets/load-more.js',
 		array(),
-		false,
+		RPS_PLUGIN_VERSION,
 		true
 	);
 

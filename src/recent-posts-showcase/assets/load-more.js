@@ -22,33 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayDate = loadMoreWrapper.dataset.displayDate === "true";
         const layout = loadMoreWrapper.dataset.layout || "grid";
 
-        // const taxonomy = loadMoreWrapper.dataset.taxonomy;
-        // const terms = loadMoreWrapper.dataset.terms
-        //     ? loadMoreWrapper.dataset.terms.split(',').filter(Boolean)
-        //     : [];
-
-        // if (taxonomy && terms.length) {
-        //     params.append('taxonomy', taxonomy);
-        //     terms.forEach(term => params.append('terms[]', term));
-        // }
-
         loadMoreBtn.textContent = 'Loading...';
-
-        // const params = new URLSearchParams({
-        //     post_type: postType,
-        //     page: page,
-        //     posts_per_page: postsPerPage,
-        //     displayImage: displayImage,
-        //     taxonomy: loadMoreWrapper.dataset.taxonomy || '',
-        //     terms: loadMoreWrapper.dataset.terms ? loadMoreWrapper.dataset.terms.split(',') : [],
-        //     displayExcerpt: displayExcerpt,
-        //     displayAuthor: displayAuthor,
-        //     displayDate: displayDate,
-        //     layout: layout,
-        // });
-
-
-
 
         const params = new URLSearchParams();
 

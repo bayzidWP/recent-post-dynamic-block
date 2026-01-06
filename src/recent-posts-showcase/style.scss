@@ -4,7 +4,6 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
-
 .recent-posts-showcase {
     display: grid;
     gap: 1rem;
@@ -137,5 +136,10 @@
     .swiper-button-prev:after {
         font-size: 28px;
         color: #686868;
+    }
+
+    .swiper-button-next:focus,
+    .swiper-button-prev:focus {
+        outline: 0;
     }
 }
